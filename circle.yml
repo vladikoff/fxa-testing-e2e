@@ -1,0 +1,7 @@
+dependencies:
+  pre:
+    - ./setup.sh
+
+test:
+  override:
+    - ./run.sh
