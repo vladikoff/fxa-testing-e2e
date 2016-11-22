@@ -23,7 +23,7 @@ mozinstall firefox/$DATE-* -d firefox
 mozdownload --type=daily --date=$DATE --extension common.tests.zip --destination=firefox
 
 # Unzip the common tests
-unzip firefox/*.common.tests.zip -d firefox/tests
+unzip -q firefox/*.common.tests.zip -d firefox/tests
 
 # Install Marionette requirements
 cd firefox/tests/config && pip install -r firefox_ui_requirements.txt --no-cache-dir
