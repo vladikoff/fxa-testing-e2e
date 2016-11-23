@@ -2,7 +2,7 @@
 
 > A set of end-to-end tests that make sure that Firefox Accounts and Firefox Sync do not regress.
 
-[![CircleCI](https://circleci.com/gh/vladikoff/fxa-testing-e2e/tree/master.svg?style=svg)](https://circleci.com/gh/vladikoff/fxa-testing-e2e/tree/master)
+[![CircleCI](https://circleci.com/gh/mozilla-services/fxa-testing-e2e.svg?style=svg)](https://circleci.com/gh/mozilla-services/fxa-testing-e2e)
 
 # Usage
 
