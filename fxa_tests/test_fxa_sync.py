@@ -97,8 +97,26 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
             self.marionette.switch_to_window(self.marionette.window_handles[1])
 
             # Account settings
+
             Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
                 expected.element_present(By.ID, 'fxa-settings-profile-header'))
+
+            # Delete account
+            button_delete = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#delete-account .settings-button'))
+            button_delete.click()
+
+            input_delete_password = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#delete-account input.password'))
+            input_delete_password.send_keys(password)
+
+            button_delete = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#delete-account button[type=submit]'))
+            button_delete.click()
+
+            # Deleted
+            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+                expected.element_present(By.ID, 'fxa-signup-header'))
 
             self.marionette.close()
 
