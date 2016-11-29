@@ -2,7 +2,8 @@
 
 rm -rf ./firefox
 
-DATE=`date +%Y-%m-%d`
+# Always stay one day behind Nightly to avoid 404ing on the download
+DATE=`date -v -1d +%Y-%m-%d`
 
 # Create virtualenv
 virtualenv venv_modules
