@@ -67,7 +67,7 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
                 expected.element_present(By.ID, 'fxa-confirm-header'))
 
             # Waiting for the email
-            time.sleep(3)
+            time.sleep(6)
 
             response = urllib.urlopen(self.url_restmail + account_email)
             email_data = json.loads(response.read())
