@@ -35,7 +35,8 @@ cd ../../..
 # For some reason PIP installs the old version of firefox_puppeteer
 # Replace the installed version with the one provided by common.tests.zip
 rm -rf ./venv_modules/lib/python*/site-packages/firefox_puppeteer
-cp -r firefox/tests/puppeteer/firefox/firefox_puppeteer ./venv_modules/lib/python*/site-packages/
+cp -r firefox/tests/marionette/puppeteer/firefox/firefox_puppeteer ./venv_modules/lib/python*/site-packages/
+cp -r firefox/tests/marionette ./venv_modules/lib/python*/site-packages/
 
 
 echo "Dependencies installed. Run ./run.sh to run the tests..."
