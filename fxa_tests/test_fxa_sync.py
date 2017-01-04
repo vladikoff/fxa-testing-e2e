@@ -7,7 +7,7 @@ import string
 import random
 import time
 from firefox_puppeteer import PuppeteerMixin
-from marionette import MarionetteTestCase
+from marionette_harness import MarionetteTestCase
 from marionette_driver import By, expected, Wait
 
 
@@ -39,31 +39,34 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.url_signup)
 
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-pp'))
 
-            input_email = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            input_email = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '.input-row .email'))
             input_email.send_keys(email_pattern)
 
-            input_password = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            input_password = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'password'))
             input_password.send_keys(password)
 
-            input_age = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            input_age = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'age'))
+
+            # repeat the send keys twice due to a bug with fast test runner typing
+            input_age.send_keys('23')
             input_age.send_keys('23')
 
             self.marionette.find_element(By.ID, 'submit-btn').click()
 
             # Choose what to sync
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-choose-what-to-sync-header'))
 
             self.marionette.find_element(By.ID, 'submit-btn').click()
 
             # Confirm your account
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-confirm-header'))
 
             # Waiting for the email
@@ -75,10 +78,10 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
             self.marionette.navigate(email_data[0]['headers']['x-link'])
 
             # Account Confirmed
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-sign-up-complete-header'))
 
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '.graphic-checkbox'))
 
             # give time for sync to kick in...
@@ -86,7 +89,7 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
 
             self.marionette.navigate('about:preferences#sync')
 
-            button_manage = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            button_manage = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'verifiedManage'))
             button_manage.click()
 
@@ -98,24 +101,24 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
 
             # Account settings
 
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-settings-profile-header'))
 
             # Delete account
-            button_delete = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            button_delete = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '#delete-account .settings-button'))
             button_delete.click()
 
-            input_delete_password = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            input_delete_password = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '#delete-account input.password'))
             input_delete_password.send_keys(password)
 
-            button_delete = Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            button_delete = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '#delete-account button[type=submit]'))
             button_delete.click()
 
             # Deleted
-            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-signup-header'))
 
             self.marionette.close()
