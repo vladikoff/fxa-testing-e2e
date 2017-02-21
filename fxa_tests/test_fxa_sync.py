@@ -19,6 +19,7 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
         self.locationbar = self.browser.navbar.locationbar
         self.identity_popup = self.browser.navbar.locationbar.identity_popup
 
+        self.url_settings = 'https://accounts.firefox.com/settings'
         self.url_signup = 'https://accounts.firefox.com/signup?service=sync&context=fx_desktop_v3'
         self.url_restmail = 'http://restmail.net/mail/'
 
@@ -77,12 +78,19 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
 
             self.marionette.navigate(email_data[0]['headers']['x-link'])
 
-            # Account Confirmed
+            # Due to A/B testing here we need to take a different path:
             Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
-                expected.element_present(By.ID, 'fxa-sign-up-complete-header'))
+                expected.element_present(By.ID, 'fox-logo'))
 
-            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
-                expected.element_present(By.CSS_SELECTOR, '.graphic-checkbox'))
+            # Account Confirmed
+            time.sleep(4)
+            if "connect_another_device" in self.marionette.get_url():
+                Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                    expected.element_present(By.CSS_SELECTOR, '.graphic-connect-another-device'))
+            else:
+                Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                    expected.element_present(By.CSS_SELECTOR, '.graphic-checkbox'))
+
 
             # give time for sync to kick in...
             time.sleep(3)
@@ -104,6 +112,94 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
             Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-settings-profile-header'))
 
+            # Login to reliers with this account
+
+            # Add-ons
+            self.marionette.navigate('https://addons.mozilla.org/en-US/firefox/')
+
+            button_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.login > a:nth-child(2)'))
+            button_login.click()
+
+            fxa_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.use-logged-in'))
+            fxa_login.click()
+
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.logout'))
+
+            # Pocket
+            self.marionette.navigate('https://getpocket.com/login')
+
+            button_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.login-btn-firefox'))
+            button_login.click()
+
+            fxa_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.use-logged-in'))
+            fxa_login.click()
+
+            fxa_accept = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#accept'))
+            fxa_accept.click()
+
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.gsf_pocketlogo'))
+
+            # Pontoon
+            self.marionette.navigate('https://pontoon.mozilla.org/teams/')
+
+            button_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#fxa-sign-in'))
+            button_login.click()
+
+            fxa_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.use-logged-in'))
+            fxa_login.click()
+
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#sign-out'))
+
+            # Test Basket Subscription
+
+            self.marionette.navigate(self.url_settings)
+
+            comm_prefs = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#communication-preferences .settings-button'))
+            comm_prefs.click()
+
+            sub_button = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#marketing-email-optin'))
+            sub_button.click()
+
+            time.sleep(6)
+
+            self.marionette.refresh()
+
+            time.sleep(2)
+
+            comm_prefs = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#communication-preferences .settings-button'))
+            comm_prefs.click()
+
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#preferences-url'))
+
+            # Unsubscribe
+
+            sub_button = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#marketing-email-optin'))
+            sub_button.click()
+
+            # Devices, check the device is in settings
+
+            device_prefs = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#clients .settings-button'))
+            device_prefs.click()
+
+            Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '#clients .client-current'))
+
             # Delete account
             button_delete = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '#delete-account .settings-button'))
@@ -123,4 +219,4 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
 
             self.marionette.close()
 
-            print "Sync works!"
+            print "FxA / Sync work!"
