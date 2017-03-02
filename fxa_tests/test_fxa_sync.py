@@ -149,6 +149,10 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
             # Pontoon
             self.marionette.navigate('https://pontoon.mozilla.org/teams/')
 
+            button_menu = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
+                expected.element_present(By.CSS_SELECTOR, '.menu-icon'))
+            button_menu.click()
+
             button_login = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.CSS_SELECTOR, '#fxa-sign-in'))
             button_login.click()
