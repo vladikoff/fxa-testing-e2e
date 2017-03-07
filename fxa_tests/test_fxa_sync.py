@@ -97,6 +97,8 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
 
             self.marionette.navigate('about:preferences#sync')
 
+            time.sleep(2)
+
             button_manage = Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'verifiedManage'))
             button_manage.click()
