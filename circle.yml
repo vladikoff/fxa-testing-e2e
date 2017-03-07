@@ -4,4 +4,5 @@ dependencies:
 
 test:
   override:
-    - ./run.sh
+    - npm install --global retry-cli
+    - retry -n 1 -- ./run.sh
