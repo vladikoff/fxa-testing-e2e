@@ -1,7 +1,7 @@
 jsmin==2.2.1
 mohawk==0.3.3
 mozbuild==0.2
-mozdownload==1.21
+mozdownload==1.22
 mozfile==1.2
 mozinfo==0.9
 mozInstall==1.12
