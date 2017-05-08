@@ -1,6 +1,11 @@
 dependencies:
   pre:
+    - sudo apt-get install expect tightvncserver
+    - mkdir -p $HOME/.vnc
+    - bash civncpass.sh
     - npm install --global retry-cli
+    - tightvncserver :1
+    - export DISPLAY=:1
     - retry -n 1 -- bash ./setup.sh
 
 test:
