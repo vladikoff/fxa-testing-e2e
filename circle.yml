@@ -1,7 +1,8 @@
 dependencies:
   pre:
-    - ./setup.sh
+    - npm install --global retry-cli
+    - retry -n 1 -- bash ./setup.sh
 
 test:
   override:
-    - ./run.sh
+    - retry -n 1 -- bash ./run.sh
