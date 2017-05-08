@@ -16,13 +16,13 @@ pip install -U pip
 pip install -r requirements.txt --no-cache-dir
 
 # Download Firefox
-mozdownload --type=daily --destination=firefox
+mozdownload --type=daily --destination=firefox --log-level=DEBUG
 
 # Install Firefox into our directory
 mozinstall firefox/*firefox* -d firefox
 
 # Download common test files
-mozdownload --type=daily --extension common.tests.zip --destination=firefox
+mozdownload --type=daily --extension common.tests.zip --destination=firefox --log-level=DEBUG
 
 # Unzip the common tests
 unzip -q firefox/*.common.tests.zip -d firefox/tests
