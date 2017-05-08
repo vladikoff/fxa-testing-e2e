@@ -6,8 +6,8 @@ dependencies:
     - npm install --global retry-cli
     - tightvncserver :1
     - export DISPLAY=:1
-    - retry -n 1 -- bash ./setup.sh
+    - DISPLAY=:1 retry -n 1 -- bash ./setup.sh
 
 test:
   override:
-    - retry -n 1 -- bash ./run.sh
+    - DISPLAY=:1 retry -n 1 -- bash ./run.sh

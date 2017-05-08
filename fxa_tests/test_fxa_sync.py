@@ -45,6 +45,9 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
                 self.marionette.navigate(self.url_signup)
             except:
                 print 'Loading...'
+            with self.marionette.using_context(self.marionette.CONTEXT_CHROME):
+                self.marionette.find_element(By.ID, 'urlbar-reload-button').click()
+
             self.marionette.timeout.page_load = 300
             self.marionette.navigate('http://example.com')
             # Bug workaround ends
