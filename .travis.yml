@@ -1,0 +1,5 @@
+language: python
+
+install: bash ./setup.sh
+
+script: bash ./run.sh
