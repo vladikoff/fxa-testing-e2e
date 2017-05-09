@@ -42,17 +42,21 @@ class TestFxaSync(PuppeteerMixin, MarionetteTestCase):
             # Bug workaround starts: https://bugzilla.mozilla.org/show_bug.cgi?id=1363223
             self.marionette.timeout.page_load = 10
             try:
-                self.marionette.navigate(self.url_signup)
+                self.marionette.navigate('https://accounts.firefox.com')
             except:
                 print 'Loading...'
             with self.marionette.using_context(self.marionette.CONTEXT_CHROME):
-                self.marionette.find_element(By.ID, 'urlbar-reload-button').click()
+                self.marionette.find_element(By.ID, 'urlbar-stop-button').click()
 
             self.marionette.timeout.page_load = 300
             self.marionette.navigate('http://example.com')
             # Bug workaround ends
 
             self.marionette.navigate(self.url_signup)
+            time.sleep(2)
+            self.marionette.go_back()
+            time.sleep(2)
+            self.marionette.go_forward()
 
             Wait(self.marionette, timeout=self.marionette.timeout.page_load).until(
                 expected.element_present(By.ID, 'fxa-pp'))
